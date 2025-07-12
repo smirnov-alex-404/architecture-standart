@@ -1,0 +1,66 @@
+@startuml
+title Container Diagram
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(User, "Клиент")
+Person(CallCenterManager, "Менеджер кол-центра")
+Person(FrontOfficeManager, "Сотрудник фронт-офиса")
+Person(BackOfficeManager, "Сотрудник бэк-офиса")
+
+System(InternetBank, "Интернет-Банк")
+System(CallCenter, "Колл-центр")
+System(MonolithBankService, "АБС")
+System(DepositService, "Сервис депозитов")
+
+Container(Site, "Сайт", "PHP + React.js")
+Container(MessageBroker, "Kafka")
+
+System_Ext(SMSGateway, "СМС-Шлюз")
+
+
+Container_Boundary(InternetBank, "Интернет-банк") {
+    Container(InternetBankApp, "Сервис Интернет-банка", ".NET Framework 4.5")
+    Container(InternetBankDatabase, "БД", "MSSQL")
+}
+Rel(InternetBankApp, InternetBankDatabase, "")
+
+
+Container_Boundary(DepositService, "Сервис депозитов") {
+    Container(DepositServiceApp, "Сервис депозитов", ".NET Framework 4.5")
+    Container(DepositDatabase, "БД", "MSSQL")
+}
+Rel(DepositServiceApp, DepositDatabase, "")
+Rel(DepositServiceApp, MessageBroker, "")
+
+
+Container_Boundary(MonolithBankService, "АБС") {
+    Container(MonolithBankServiceApp, "Интерфейс АБС", "")
+    Container(BankDatabase, "БД", "Oracle")
+}
+Rel(MonolithBankServiceApp, BankDatabase, "")
+
+
+Rel(User, Site, "")
+Rel(User, InternetBankApp, "")
+
+Rel(CallCenterManager, BackOfficeManager, "")
+BiRel(FrontOfficeManager, BackOfficeManager, "")
+
+Rel(CallCenterManager, CallCenter, "")
+Rel(CallCenterManager, User, "")
+
+Rel(FrontOfficeManager, MonolithBankServiceApp, "")
+Rel(BackOfficeManager, MonolithBankServiceApp, "")
+
+Rel(Site, MonolithBankServiceApp, "")
+Rel(MessageBroker, MonolithBankServiceApp, "")
+
+Rel(InternetBankApp, DepositServiceApp, "")
+
+Rel(MonolithBankServiceApp, SMSGateway, "")
+Rel(SMSGateway, User, "")
+
+
+@enduml
