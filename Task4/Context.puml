@@ -1,0 +1,27 @@
+@startuml
+title Context Diagram
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(User, "Клиент")
+Person(CallCenterManager, "Менеджер кол-центра")
+Person_Ext(CallCenterPartnerManager, "Менеджер партнёрского кол-центра")
+
+System(CallCenter, "Колл-центр")
+System(DepositSystem, "Сервис депозитов")
+
+
+System_Ext(SFTP, "SFTP Сервер", "")
+
+
+Rel(CallCenterPartnerManager, User, "")
+Rel(CallCenterPartnerManager, SFTP, "Получает информацию о ставках")
+
+Rel(CallCenterManager, CallCenter, "")
+Rel(CallCenter, DepositSystem, "Получает информацию о ставках")
+
+Rel(DepositSystem, SFTP, "Экспортирует информацию о ставках")
+Rel(CallCenterManager, User, "")
+
+@enduml

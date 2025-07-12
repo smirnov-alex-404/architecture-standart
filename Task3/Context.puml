@@ -1,0 +1,39 @@
+@startuml
+title Context Diagram
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(User, "Клиент")
+Person(CallCenterManager, "Менеджер кол-центра")
+Person(FrontOfficeManager, "Сотрудник фронт-офиса")
+Person(BackOfficeManager, "Сотрудник бэк-офиса")
+
+System(Site, "Сайт")
+System(InternetBank, "Интернет-Банк")
+System(CallCenter, "Колл-центр")
+System(MonolithBankSystem, "АБС")
+
+System_Ext(SMSGateway, "СМС-Шлюз")
+
+
+Rel(User, Site, "")
+Rel(User, InternetBank, "")
+
+Rel(CallCenterManager, BackOfficeManager, "")
+BiRel(FrontOfficeManager, BackOfficeManager, "")
+
+Rel(CallCenterManager, CallCenter, "")
+Rel(CallCenterManager, User, "")
+
+Rel(FrontOfficeManager, MonolithBankSystem, "")
+Rel(BackOfficeManager, MonolithBankSystem, "")
+
+Rel(Site, MonolithBankSystem, "")
+Rel(InternetBank, MonolithBankSystem, "")
+
+Rel(MonolithBankSystem, SMSGateway, "")
+Rel(SMSGateway, User, "")
+
+
+@enduml

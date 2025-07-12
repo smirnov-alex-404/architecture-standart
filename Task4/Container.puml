@@ -1,0 +1,47 @@
+@startuml
+title Container Diagram
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(User, "Клиент")
+Person(CallCenterManager, "Менеджер кол-центра")
+Person_Ext(CallCenterPartnerManager, "Менеджер партнёрского кол-центра")
+
+System(MonolithBankService, "АБС")
+System(DepositService, "Сервис депозитов")
+
+Container(CallCenter, "Колл-центр")
+
+Container_Ext(SFTP, "SFTP-Сервер")
+
+
+Container_Boundary(DepositService, "Сервис депозитов") {
+    Container(DepositServiceApp, "Сервис депозитов", ".NET Framework 4.5")
+    Container(DepositDatabase, "БД", "MSSQL", "")
+}
+Rel(DepositServiceApp, DepositDatabase, "Чтение/Запись")
+Rel(DepositServiceApp, SFTP, "Экспортирует информацию о ставках")
+
+
+Container_Boundary(MonolithBankService, "АБС") {
+    Container(MonolithBankServiceApp, "Интерфейс АБС", "")
+    Container(BankDatabase, "БД", "Oracle", "")
+}
+Rel(MonolithBankServiceApp, BankDatabase, "Чтение/Запись")
+Rel(DepositServiceApp, MonolithBankServiceApp, "")
+
+
+
+Rel(CallCenterManager, CallCenter, "Получает информацию о ставках")
+Rel(CallCenterManager, User, "")
+
+Rel(CallCenterPartnerManager, User, "")
+Rel(CallCenterPartnerManager, SFTP, "Получает информацию о ставках")
+
+Rel(CallCenter, DepositServiceApp, "Получает информацию о ставках")
+
+
+
+
+@enduml
